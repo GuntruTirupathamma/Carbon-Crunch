@@ -907,7 +907,7 @@ except Exception:
 # ── Cache-version guard ──────────────────────────────────────────────────────
 # Bump this string whenever extraction logic changes so stale cached results
 # from previous code versions are automatically discarded.
-_CACHE_VERSION = "v2.6-revenue-fix"
+_CACHE_VERSION = "v3.0-STABLE"
 
 if st.session_state.get("_cache_version") != _CACHE_VERSION:
     st.cache_data.clear()
