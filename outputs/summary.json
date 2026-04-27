@@ -1,243 +1,1268 @@
 {
-  "total_transactions_processed": 50,
-  "successful_extractions": 50,
+  "total_transactions_processed": 371,
+  "successful_extractions": 371,
   "failed_extractions": 0,
-  "receipts_with_total_amount": 50,
-  "low_confidence_receipt_count": 50,
-  "total_spend": 93645.2,
-  "average_transaction": 1872.9,
+  "total_spend": 14629.21,
+  "daily_average": 0.2,
+  "average_transaction": 45.43,
+  "max_single_transaction": 840.0,
+  "min_single_transaction": 0.01,
+  "top_category": "Uncategorized",
+  "spend_per_category": {
+    "Uncategorized": {
+      "total": 6661.78,
+      "transactions": 181
+    },
+    "Dining": {
+      "total": 2632.59,
+      "transactions": 47
+    },
+    "Groceries": {
+      "total": 1995.95,
+      "transactions": 20
+    },
+    "Transport": {
+      "total": 1967.26,
+      "transactions": 52
+    },
+    "Retail": {
+      "total": 637.8,
+      "transactions": 2
+    },
+    "Utilities": {
+      "total": 504.38,
+      "transactions": 10
+    },
+    "Office": {
+      "total": 143.21,
+      "transactions": 7
+    },
+    "Healthcare": {
+      "total": 86.24,
+      "transactions": 3
+    }
+  },
   "spend_per_store": {
-    "CzhJzH)": {
-      "total": 30032.0,
+    "TRADER JOE\"S": {
+      "total": 840.0,
       "transactions": 1,
-      "average": 30032.0
+      "average": 840.0
     },
-    "RESTORAN WAN SHENG": {
-      "total": 15224.0,
+    "KAISON FURNISHING SDN BHD": {
+      "total": 838.8,
       "transactions": 1,
-      "average": 15224.0
+      "average": 838.8
     },
-    "LIAN CHI PU TIAN VEGETARIAN": {
-      "total": 9016.0,
+    "WHOLE FOODS": {
+      "total": 828.28,
       "transactions": 1,
-      "average": 9016.0
+      "average": 828.28
     },
-    "WALAMART": {
-      "total": 3365.0,
+    "tan": {
+      "total": 741.0,
+      "transactions": 5,
+      "average": 148.2
+    },
+    "SUFER SEVEN CASH": {
+      "total": 619.5,
       "transactions": 1,
-      "average": 3365.0
+      "average": 619.5
     },
-    "SYARIKAT PERNIAGAAN GIN KEE": {
-      "total": 2760.0,
-      "transactions": 3,
-      "average": 920.0
-    },
-    "tan woon yann": {
-      "total": 1804.0,
+    "IKANO HANDEL  SDN BHD": {
+      "total": 560.5,
       "transactions": 2,
-      "average": 902.0
+      "average": 280.25
     },
-    "LIGHTROOM GALLERY  SDN  BHD": {
-      "total": 1776.0,
+    "Morganilelde\"": {
+      "total": 559.53,
+      "transactions": 1,
+      "average": 559.53
+    },
+    "Dollar Tnee StoRes,": {
+      "total": 510.21,
+      "transactions": 1,
+      "average": 510.21
+    },
+    "GREAT ZONE HOUSEHOLD CENTRE SDN BHD": {
+      "total": 367.3,
+      "transactions": 1,
+      "average": 367.3
+    },
+    "Fo3o4'": {
+      "total": 332.3,
+      "transactions": 1,
+      "average": 332.3
+    },
+    "BENED (SP) SDN_ BHD.": {
+      "total": 308.7,
+      "transactions": 1,
+      "average": 308.7
+    },
+    "KON KWA HARDWARE TRADING": {
+      "total": 219.81,
       "transactions": 2,
-      "average": 888.0
+      "average": 109.91
     },
-    "ASO ELECTRICAL TRADING SDN BHD": {
-      "total": 1613.0,
-      "transactions": 1,
-      "average": 1613.0
-    },
-    "POPULAR Book": {
-      "total": 992.0,
-      "transactions": 1,
-      "average": 992.0
-    },
-    "RESTORAN IBRAHIM MAJU SB": {
-      "total": 992.0,
-      "transactions": 1,
-      "average": 992.0
-    },
-    "Euerdiah": {
-      "total": 987.0,
-      "transactions": 1,
-      "average": 987.0
-    },
-    "WAL-MART": {
-      "total": 986.0,
-      "transactions": 1,
-      "average": 986.0
-    },
-    "SAINT HEART PASTRY": {
-      "total": 980.0,
-      "transactions": 1,
-      "average": 980.0
+    "UNIHAKKA INTERNATIONAL SDN BHD": {
+      "total": 210.7,
+      "transactions": 7,
+      "average": 30.1
     },
     "ROCKU": {
-      "total": 975.0,
+      "total": 201.55,
       "transactions": 1,
-      "average": 975.0
+      "average": 201.55
+    },
+    "Lot P.t: 2811, JALAN ANGSA,": {
+      "total": 200.94,
+      "transactions": 1,
+      "average": 200.94
+    },
+    "ASO ELECTRICAL TRADING SDN BHD": {
+      "total": 193.6,
+      "transactions": 2,
+      "average": 96.8
+    },
+    "BREWERY": {
+      "total": 189.75,
+      "transactions": 1,
+      "average": 189.75
+    },
+    "BLC": {
+      "total": 184.17,
+      "transactions": 2,
+      "average": 92.08
+    },
+    "LoT P.T.": {
+      "total": 160.17,
+      "transactions": 1,
+      "average": 160.17
+    },
+    "SYARIKAT PERNIAGAAN GIN KEE": {
+      "total": 147.21,
+      "transactions": 31,
+      "average": 4.75
+    },
+    "IREE": {
+      "total": 145.0,
+      "transactions": 1,
+      "average": 145.0
+    },
+    "LoT P.t. 2814, JALAK Angsa,": {
+      "total": 141.56,
+      "transactions": 1,
+      "average": 141.56
+    },
+    "HOVERN": {
+      "total": 141.51,
+      "transactions": 1,
+      "average": 141.51
+    },
+    "Super Terminal Sdn Bhd": {
+      "total": 132.5,
+      "transactions": 1,
+      "average": 132.5
+    },
+    "Nandos:": {
+      "total": 129.3,
+      "transactions": 1,
+      "average": 129.3
+    },
+    "YONG CEN ENTERPRISE": {
+      "total": 129.05,
+      "transactions": 2,
+      "average": 64.53
+    },
+    "Cash Sale": {
+      "total": 123.2,
+      "transactions": 2,
+      "average": 61.6
     },
     "Winco": {
-      "total": 955.0,
+      "total": 121.92,
       "transactions": 1,
-      "average": 955.0
+      "average": 121.92
     },
-    "PERNIAGAAN ZHENG HUI": {
-      "total": 955.0,
+    "TEQ HENE STATIDNERL &": {
+      "total": 120.0,
       "transactions": 1,
-      "average": 955.0
-    },
-    "SDN  BHD": {
-      "total": 955.0,
-      "transactions": 1,
-      "average": 955.0
-    },
-    "HAPPY SNACKS ENTERPRISE": {
-      "total": 955.0,
-      "transactions": 1,
-      "average": 955.0
-    },
-    "(MiNIn YoU": {
-      "total": 955.0,
-      "transactions": 1,
-      "average": 955.0
-    },
-    "D.I.Y. (M) Sdn BHD": {
-      "total": 955.0,
-      "transactions": 1,
-      "average": 955.0
-    },
-    "THAI DELICIOUS RESTAURANT": {
-      "total": 951.0,
-      "transactions": 1,
-      "average": 951.0
-    },
-    "AEON CO ,": {
-      "total": 946.0,
-      "transactions": 1,
-      "average": 946.0
-    },
-    "kox2x": {
-      "total": 942.0,
-      "transactions": 1,
-      "average": 942.0
-    },
-    "FUN N CHEER (MALURD)": {
-      "total": 936.0,
-      "transactions": 1,
-      "average": 936.0
-    },
-    "#000002 BAiFu (M) Sdn Bhd": {
-      "total": 920.0,
-      "transactions": 1,
-      "average": 920.0
-    },
-    "COMPANY": {
-      "total": 897.0,
-      "transactions": 1,
-      "average": 897.0
-    },
-    "RESTAURANT": {
-      "total": 888.0,
-      "transactions": 1,
-      "average": 888.0
-    },
-    "99 SPEED Nart S/8 (519537-X)": {
-      "total": 888.0,
-      "transactions": 1,
-      "average": 888.0
-    },
-    "PASARAYA BORONG PINTAR": {
-      "total": 884.0,
-      "transactions": 1,
-      "average": 884.0
-    },
-    "KEDAI PAPAN YEW CHUAN": {
-      "total": 876.0,
-      "transactions": 1,
-      "average": 876.0
-    },
-    "Celke": {
-      "total": 876.0,
-      "transactions": 1,
-      "average": 876.0
-    },
-    "(EDAI BUKU NEW ACHEIVERS": {
-      "total": 864.0,
-      "transactions": 1,
-      "average": 864.0
-    },
-    "8ozs?2": {
-      "total": 863.0,
-      "transactions": 1,
-      "average": 863.0
-    },
-    "YHM_Keon Tebrau City": {
-      "total": 827.0,
-      "transactions": 1,
-      "average": 827.0
-    },
-    "POPULAR Bopk": {
-      "total": 825.0,
-      "transactions": 1,
-      "average": 825.0
-    },
-    "'ozos": {
-      "total": 817.0,
-      "transactions": 1,
-      "average": 817.0
-    },
-    "SWC ENTERPRISE SDN BAD": {
-      "total": 803.0,
-      "transactions": 1,
-      "average": 803.0
-    },
-    "99 SFEED Mart 5/8 (519537-X)": {
-      "total": 747.0,
-      "transactions": 1,
-      "average": 747.0
-    },
-    "BMC": {
-      "total": 432.0,
-      "transactions": 1,
-      "average": 432.0
-    },
-    "RESTORAN  HASSANBTSTRO": {
-      "total": 68.0,
-      "transactions": 1,
-      "average": 68.0
-    },
-    "GREEN LANE PHARMACY SIN BHD": {
-      "total": 67.0,
-      "transactions": 1,
-      "average": 67.0
+      "average": 120.0
     },
     "BHD": {
+      "total": 118.26,
+      "transactions": 3,
+      "average": 39.42
+    },
+    "VIVOPAC MARKETING SDN BHD (1070687-M)": {
+      "total": 117.9,
+      "transactions": 3,
+      "average": 39.3
+    },
+    "RESTAURANT": {
+      "total": 110.0,
+      "transactions": 1,
+      "average": 110.0
+    },
+    "Zen and cof fee 28 S/B": {
+      "total": 105.0,
+      "transactions": 1,
+      "average": 105.0
+    },
+    "Chili": {
+      "total": 102.4,
+      "transactions": 1,
+      "average": 102.4
+    },
+    "JALAN ANGSA,": {
+      "total": 102.36,
+      "transactions": 1,
+      "average": 102.36
+    },
+    "IKANO HANDELSDN BHD": {
+      "total": 99.8,
+      "transactions": 1,
+      "average": 99.8
+    },
+    "JAYA ENTERPAI SE": {
+      "total": 99.06,
+      "transactions": 1,
+      "average": 99.06
+    },
+    "Xt]u": {
+      "total": 98.9,
+      "transactions": 1,
+      "average": 98.9
+    },
+    "8ozs?2": {
+      "total": 95.17,
+      "transactions": 1,
+      "average": 95.17
+    },
+    "THAI DELICIOUS RESTAURANT'": {
+      "total": 92.8,
+      "transactions": 1,
+      "average": 92.8
+    },
+    "Ao3o88": {
+      "total": 89.6,
+      "transactions": 1,
+      "average": 89.6
+    },
+    "COxce": {
+      "total": 89.13,
+      "transactions": 1,
+      "average": 89.13
+    },
+    "Gmb": {
+      "total": 86.0,
+      "transactions": 1,
+      "average": 86.0
+    },
+    "Fudc": {
+      "total": 79.35,
+      "transactions": 1,
+      "average": 79.35
+    },
+    "heONG RESTAURANT": {
+      "total": 77.4,
+      "transactions": 1,
+      "average": 77.4
+    },
+    "BEYOND BROTHERS HARDWARE": {
+      "total": 73.65,
+      "transactions": 3,
+      "average": 24.55
+    },
+    "BMC": {
+      "total": 72.93,
+      "transactions": 1,
+      "average": 72.93
+    },
+    "Son BHD": {
+      "total": 71.9,
+      "transactions": 1,
+      "average": 71.9
+    },
+    "8 BISTRO own by CNU  TRADING": {
+      "total": 71.25,
+      "transactions": 1,
+      "average": 71.25
+    },
+    "3RD FLR , AEON TAMAH MALURI Sc": {
+      "total": 70.75,
+      "transactions": 1,
+      "average": 70.75
+    },
+    "9R6 FLR, AEON TAMAN MALuri  SC": {
+      "total": 68.01,
+      "transactions": 1,
+      "average": 68.01
+    },
+    "Rsk .": {
+      "total": 64.5,
+      "transactions": 1,
+      "average": 64.5
+    },
+    "BILLION SIX ENTERPRISE": {
+      "total": 63.8,
+      "transactions": 1,
+      "average": 63.8
+    },
+    "KEDAI PAPAN YEW CHUAN": {
+      "total": 62.7,
+      "transactions": 8,
+      "average": 7.84
+    },
+    "clh": {
+      "total": 61.99,
+      "transactions": 1,
+      "average": 61.99
+    },
+    "SUPER SEVEN C4SH & CARRY SDN BHD": {
+      "total": 59.0,
+      "transactions": 1,
+      "average": 59.0
+    },
+    "SDN BHD": {
+      "total": 58.32,
+      "transactions": 2,
+      "average": 29.16
+    },
+    "Aozoz": {
       "total": 58.2,
       "transactions": 1,
       "average": 58.2
     },
-    "UNIHAKKA INTERNATIONAL SDN BHD": {
+    "LA STATIONERY SDN BHD (640899-P)": {
+      "total": 56.8,
+      "transactions": 1,
+      "average": 56.8
+    },
+    "[ED HENG STATIONERY & BOOKS": {
+      "total": 55.1,
+      "transactions": 1,
+      "average": 55.1
+    },
+    "LIAN CHI PU TIAN VEGETARIAN": {
+      "total": 53.55,
+      "transactions": 1,
+      "average": 53.55
+    },
+    "POPULAR": {
+      "total": 53.13,
+      "transactions": 6,
+      "average": 8.86
+    },
+    "7rit": {
+      "total": 53.0,
+      "transactions": 1,
+      "average": 53.0
+    },
+    "D.I,Y. (M) Sdn BHD": {
+      "total": 50.8,
+      "transactions": 1,
+      "average": 50.8
+    },
+    "ean": {
+      "total": 50.0,
+      "transactions": 1,
+      "average": 50.0
+    },
+    "Moha ea": {
+      "total": 49.9,
+      "transactions": 1,
+      "average": 49.9
+    },
+    "A6zo64": {
+      "total": 49.7,
+      "transactions": 1,
+      "average": 49.7
+    },
+    "KOH": {
+      "total": 48.0,
+      "transactions": 1,
+      "average": 48.0
+    },
+    "ADVANCO COMPANY": {
+      "total": 46.44,
+      "transactions": 3,
+      "average": 15.48
+    },
+    "ZL2T9HJH2SF": {
+      "total": 46.38,
+      "transactions": 2,
+      "average": 23.19
+    },
+    "LoT P.T. 2811, JALAN ANGSA ,": {
+      "total": 45.35,
+      "transactions": 1,
+      "average": 45.35
+    },
+    "(EDAI BUKU NEW ACHEIVERS": {
+      "total": 45.28,
+      "transactions": 1,
+      "average": 45.28
+    },
+    "PHARMACY": {
+      "total": 44.94,
+      "transactions": 1,
+      "average": 44.94
+    },
+    "WAhiN HARDWARE  SDN  BHD": {
+      "total": 42.4,
+      "transactions": 1,
+      "average": 42.4
+    },
+    "AL   MFNDIS-THE MINES": {
+      "total": 41.3,
+      "transactions": 1,
+      "average": 41.3
+    },
+    "HUGO TRADING SDN BHD": {
+      "total": 40.8,
+      "transactions": 1,
+      "average": 40.8
+    },
+    "Ho3o3o": {
+      "total": 38.2,
+      "transactions": 1,
+      "average": 38.2
+    },
+    "Adzo4I": {
+      "total": 38.2,
+      "transactions": 1,
+      "average": 38.2
+    },
+    "Aozasz": {
+      "total": 38.2,
+      "transactions": 1,
+      "average": 38.2
+    },
+    "Hoz o7": {
+      "total": 36.9,
+      "transactions": 1,
+      "average": 36.9
+    },
+    "KEDAI BUKU NEW ACHEIVERS": {
+      "total": 36.0,
+      "transactions": 1,
+      "average": 36.0
+    },
+    "SUPER SEVCN CAS4 & CARRY Son 3HD": {
+      "total": 35.5,
+      "transactions": 1,
+      "average": 35.5
+    },
+    "DAISO JAPan,": {
+      "total": 35.4,
+      "transactions": 1,
+      "average": 35.4
+    },
+    "GREEN LAnE PHARMACY SIN BhD": {
+      "total": 34.8,
+      "transactions": 1,
+      "average": 34.8
+    },
+    "MR. D,I, Y(M)SDN": {
+      "total": 34.1,
+      "transactions": 1,
+      "average": 34.1
+    },
+    "ENW Hardware Centre (M) Sdn: Bhd_": {
+      "total": 34.0,
+      "transactions": 1,
+      "average": 34.0
+    },
+    "DOMINO '$ PIZZA": {
+      "total": 33.0,
+      "transactions": 1,
+      "average": 33.0
+    },
+    "KOME Masuer HARDWARE &": {
+      "total": 31.8,
+      "transactions": 2,
+      "average": 15.9
+    },
+    "POPULAR Bopk": {
+      "total": 31.45,
+      "transactions": 1,
+      "average": 31.45
+    },
+    "Gerbang Alaf Restaurants Sdn Bhd": {
+      "total": 30.5,
+      "transactions": 3,
+      "average": 10.17
+    },
+    "st Jzz": {
+      "total": 30.25,
+      "transactions": 1,
+      "average": 30.25
+    },
+    "CHOp VEW LIAN": {
+      "total": 30.08,
+      "transactions": 1,
+      "average": 30.08
+    },
+    "ENTERPRISE": {
+      "total": 30.0,
+      "transactions": 1,
+      "average": 30.0
+    },
+    "sigug0it": {
+      "total": 29.24,
+      "transactions": 1,
+      "average": 29.24
+    },
+    "Ho:!ss\"": {
+      "total": 28.8,
+      "transactions": 1,
+      "average": 28.8
+    },
+    "BOOK": {
+      "total": 27.38,
+      "transactions": 1,
+      "average": 27.38
+    },
+    "HAPPY SNACKS ENTERPRISE": {
+      "total": 26.82,
+      "transactions": 1,
+      "average": 26.82
+    },
+    "Aatn": {
+      "total": 26.6,
+      "transactions": 1,
+      "average": 26.6
+    },
+    "TED HENG STATIDNERY & BODKS": {
+      "total": 26.0,
+      "transactions": 1,
+      "average": 26.0
+    },
+    "TEQ HENG STATIQNERK & BQDKS": {
+      "total": 25.8,
+      "transactions": 1,
+      "average": 25.8
+    },
+    "dsFz.": {
+      "total": 25.4,
+      "transactions": 1,
+      "average": 25.4
+    },
+    "Diclxox -": {
+      "total": 24.5,
+      "transactions": 1,
+      "average": 24.5
+    },
+    "PASARAYA BORONG PINTAR": {
+      "total": 23.65,
+      "transactions": 6,
+      "average": 3.94
+    },
+    "MYDIN": {
+      "total": 23.4,
+      "transactions": 2,
+      "average": 11.7
+    },
+    "Banh Mi CafE": {
+      "total": 23.25,
+      "transactions": 1,
+      "average": 23.25
+    },
+    "SECURE PARKING": {
+      "total": 23.03,
+      "transactions": 1,
+      "average": 23.03
+    },
+    "tan woon yann": {
+      "total": 22.06,
+      "transactions": 4,
+      "average": 5.51
+    },
+    "baskinB3RrobbiNS": {
+      "total": 21.5,
+      "transactions": 1,
+      "average": 21.5
+    },
+    "Cw Khoo KARDWARE SDN BHD": {
+      "total": 21.2,
+      "transactions": 1,
+      "average": 21.2
+    },
+    "(MiNIn YoU": {
+      "total": 21.2,
+      "transactions": 1,
+      "average": 21.2
+    },
+    "LEE WAH FLORIST SDN BHD": {
+      "total": 21.18,
+      "transactions": 1,
+      "average": 21.18
+    },
+    "GOLDEN KEY MAKER": {
+      "total": 21.0,
+      "transactions": 1,
+      "average": 21.0
+    },
+    "Salon Du Chocolat": {
+      "total": 20.4,
+      "transactions": 1,
+      "average": 20.4
+    },
+    "SAM": {
       "total": 20.0,
       "transactions": 1,
       "average": 20.0
     },
-    "dsFr.": {
-      "total": 6.0,
+    "MY HAPPY PHARMACY PLT": {
+      "total": 19.34,
       "transactions": 1,
+      "average": 19.34
+    },
+    "KAISON  FurNISHInG  SDN BHD": {
+      "total": 18.7,
+      "transactions": 1,
+      "average": 18.7
+    },
+    "SUPER SEVEN CASH & CARRY SDN 'BHD": {
+      "total": 18.3,
+      "transactions": 1,
+      "average": 18.3
+    },
+    "SRD FLR , AEON TAMAN MALURI SC": {
+      "total": 17.7,
+      "transactions": 1,
+      "average": 17.7
+    },
+    "UwYorr": {
+      "total": 17.7,
+      "transactions": 1,
+      "average": 17.7
+    },
+    "WALAMART": {
+      "total": 17.45,
+      "transactions": 1,
+      "average": 17.45
+    },
+    "TED HENG STATIONERY & BODKS": {
+      "total": 16.98,
+      "transactions": 1,
+      "average": 16.98
+    },
+    "meb": {
+      "total": 16.05,
+      "transactions": 1,
+      "average": 16.05
+    },
+    "Arye 362": {
+      "total": 15.25,
+      "transactions": 1,
+      "average": 15.25
+    },
+    "RESTORAN  HASSANBTSTRO": {
+      "total": 15.0,
+      "transactions": 1,
+      "average": 15.0
+    },
+    "FUN N CHEER (MALURD)": {
+      "total": 14.9,
+      "transactions": 1,
+      "average": 14.9
+    },
+    "Aso ELECTRICAL TRADING SDN BHD": {
+      "total": 14.04,
+      "transactions": 1,
+      "average": 14.04
+    },
+    "SOLARIS": {
+      "total": 14.0,
+      "transactions": 1,
+      "average": 14.0
+    },
+    "CARREFOUR RESTAURANT": {
+      "total": 13.8,
+      "transactions": 1,
+      "average": 13.8
+    },
+    "YHM_Keon Tebrau City": {
+      "total": 13.1,
+      "transactions": 1,
+      "average": 13.1
+    },
+    "MAHKOTA CHERAS": {
+      "total": 12.8,
+      "transactions": 1,
+      "average": 12.8
+    },
+    "Zu80z0ss": {
+      "total": 12.3,
+      "transactions": 1,
+      "average": 12.3
+    },
+    "SWC ENTERPRISE SDN BHD": {
+      "total": 12.0,
+      "transactions": 2,
       "average": 6.0
+    },
+    "{AN HING STATIONERY SDN": {
+      "total": 12.0,
+      "transactions": 1,
+      "average": 12.0
+    },
+    "Guerdian Heakez": {
+      "total": 12.0,
+      "transactions": 1,
+      "average": 12.0
+    },
+    "D.I.Y. (KUCHAI)": {
+      "total": 11.9,
+      "transactions": 1,
+      "average": 11.9
+    },
+    "Di (osle": {
+      "total": 11.63,
+      "transactions": 1,
+      "average": 11.63
+    },
+    "Lot P.T, 2811, JALAN": {
+      "total": 11.4,
+      "transactions": 1,
+      "average": 11.4
+    },
+    "SLF": {
+      "total": 11.32,
+      "transactions": 1,
+      "average": 11.32
+    },
+    "RAIO)": {
+      "total": 11.2,
+      "transactions": 1,
+      "average": 11.2
     },
     "epang Alaf Restaurants Sdn Bhd": {
+      "total": 11.1,
+      "transactions": 1,
+      "average": 11.1
+    },
+    "WAL-MART": {
+      "total": 11.0,
+      "transactions": 1,
+      "average": 11.0
+    },
+    "Jec": {
+      "total": 11.0,
+      "transactions": 1,
+      "average": 11.0
+    },
+    "Segi Cash": {
+      "total": 10.9,
+      "transactions": 1,
+      "average": 10.9
+    },
+    "SON BHD": {
+      "total": 10.5,
+      "transactions": 1,
+      "average": 10.5
+    },
+    "HON HWA HARDWARE TRADING": {
+      "total": 10.4,
+      "transactions": 1,
+      "average": 10.4
+    },
+    "Hlozus": {
+      "total": 10.0,
+      "transactions": 1,
+      "average": 10.0
+    },
+    "RES ! AURANT": {
+      "total": 10.0,
+      "transactions": 1,
+      "average": 10.0
+    },
+    "EAOLE": {
+      "total": 10.0,
+      "transactions": 1,
+      "average": 10.0
+    },
+    "Lot Pat. 2811, JALAN": {
+      "total": 10.0,
+      "transactions": 1,
+      "average": 10.0
+    },
+    "Guardian Ilealth Grud Beauty Gdn Rrl": {
+      "total": 9.95,
+      "transactions": 1,
+      "average": 9.95
+    },
+    "Lot P.t. 2811, JALAN ANGSA,": {
+      "total": 9.9,
+      "transactions": 1,
+      "average": 9.9
+    },
+    "SWEET   FOREST  CAFE": {
+      "total": 9.9,
+      "transactions": 1,
+      "average": 9.9
+    },
+    "KIKU  JAPANESE": {
+      "total": 9.9,
+      "transactions": 1,
+      "average": 9.9
+    },
+    "Ceke": {
+      "total": 9.9,
+      "transactions": 1,
+      "average": 9.9
+    },
+    "SLPER SEVEN CASH & CARBX SDN BHD": {
+      "total": 9.9,
+      "transactions": 1,
+      "average": 9.9
+    },
+    "SPAR": {
+      "total": 9.53,
+      "transactions": 1,
+      "average": 9.53
+    },
+    "Segi Cash & Carry Sdn, Bhd/317041-W)": {
+      "total": 9.02,
+      "transactions": 1,
+      "average": 9.02
+    },
+    "FUYI MINI MARKET": {
+      "total": 9.0,
+      "transactions": 1,
+      "average": 9.0
+    },
+    "CzhJzH)": {
+      "total": 9.0,
+      "transactions": 1,
+      "average": 9.0
+    },
+    "L TWO FLORIST & HANDICRAFT": {
+      "total": 9.0,
+      "transactions": 1,
+      "average": 9.0
+    },
+    "TED HENG STATIQNERY & BO@KS": {
+      "total": 8.68,
+      "transactions": 1,
+      "average": 8.68
+    },
+    "4o3irs": {
+      "total": 8.4,
+      "transactions": 1,
+      "average": 8.4
+    },
+    "Rzvy: |": {
+      "total": 8.2,
+      "transactions": 1,
+      "average": 8.2
+    },
+    "PERNIAGAAN ZHENG HUI": {
+      "total": 8.0,
+      "transactions": 1,
+      "average": 8.0
+    },
+    "TSH POWER HARDWARE": {
+      "total": 8.0,
+      "transactions": 1,
+      "average": 8.0
+    },
+    "CROSS CHANNEL NEIWORK SDN BHD_": {
+      "total": 7.95,
+      "transactions": 1,
+      "average": 7.95
+    },
+    "your  chunce": {
+      "total": 7.9,
+      "transactions": 1,
+      "average": 7.9
+    },
+    "STAR GROCER SDN BHD (1171881-": {
+      "total": 7.5,
+      "transactions": 1,
+      "average": 7.5
+    },
+    "SiN Lianhap sohbhdd": {
+      "total": 7.3,
+      "transactions": 1,
+      "average": 7.3
+    },
+    "KON KWA KARDWARE TRADING": {
+      "total": 7.2,
+      "transactions": 1,
+      "average": 7.2
+    },
+    "SUSHI  MENTAI": {
+      "total": 7.2,
+      "transactions": 1,
+      "average": 7.2
+    },
+    "EAGLE": {
+      "total": 7.0,
+      "transactions": 1,
+      "average": 7.0
+    },
+    "unfu": {
+      "total": 7.0,
+      "transactions": 1,
+      "average": 7.0
+    },
+    "MCHIRDT SR": {
+      "total": 7.0,
+      "transactions": 1,
+      "average": 7.0
+    },
+    "Mum XENG ELECTRICAL &": {
+      "total": 7.0,
+      "transactions": 1,
+      "average": 7.0
+    },
+    "Aozpi9": {
+      "total": 6.6,
+      "transactions": 1,
+      "average": 6.6
+    },
+    "Triple Sk Point Enterpris:u Gecmes Jayt": {
+      "total": 6.5,
+      "transactions": 1,
+      "average": 6.5
+    },
+    "KING '5 CONFECTIONERY S/B 273500-U (KSB)": {
+      "total": 6.4,
+      "transactions": 1,
+      "average": 6.4
+    },
+    "Asxols": {
+      "total": 6.37,
+      "transactions": 1,
+      "average": 6.37
+    },
+    "(M) Son BHD": {
+      "total": 6.2,
+      "transactions": 1,
+      "average": 6.2
+    },
+    "PEIRON BKT LANJAN SB": {
       "total": 6.0,
       "transactions": 1,
       "average": 6.0
     },
-    "D.I,Y. (M) Sdn BHD": {
+    "Hatey_Notman": {
       "total": 6.0,
       "transactions": 1,
       "average": 6.0
+    },
+    "JUWITA WEDDINGS (366310-U)": {
+      "total": 6.0,
+      "transactions": 1,
+      "average": 6.0
+    },
+    "AEON CO ,": {
+      "total": 5.9,
+      "transactions": 1,
+      "average": 5.9
+    },
+    "KHE ELECTRICAL TRADING": {
+      "total": 5.76,
+      "transactions": 1,
+      "average": 5.76
+    },
+    "POPULAR BoOk": {
+      "total": 5.75,
+      "transactions": 1,
+      "average": 5.75
+    },
+    "LIGHTROOM GALLERY  SDN": {
+      "total": 5.66,
+      "transactions": 2,
+      "average": 2.83
+    },
+    "Lot": {
+      "total": 5.35,
+      "transactions": 1,
+      "average": 5.35
+    },
+    "ECONSAVEI": {
+      "total": 5.15,
+      "transactions": 1,
+      "average": 5.15
+    },
+    "RESTORAN WAN SHENG": {
+      "total": 4.74,
+      "transactions": 3,
+      "average": 1.58
+    },
+    "HON KWA HARDWARE TRADING": {
+      "total": 4.72,
+      "transactions": 1,
+      "average": 4.72
+    },
+    "See": {
+      "total": 4.64,
+      "transactions": 1,
+      "average": 4.64
+    },
+    "4oziz}": {
+      "total": 4.3,
+      "transactions": 1,
+      "average": 4.3
+    },
+    "POPULAR  BOok": {
+      "total": 4.29,
+      "transactions": 1,
+      "average": 4.29
+    },
+    "SWC ENTERPRISE SDN BAD": {
+      "total": 4.2,
+      "transactions": 1,
+      "average": 4.2
+    },
+    "hz6q%": {
+      "total": 4.03,
+      "transactions": 1,
+      "average": 4.03
+    },
+    "Lot PT": {
+      "total": 4.0,
+      "transactions": 1,
+      "average": 4.0
+    },
+    "TE STORE   (HALAYSIA) SDN BHD  (8193)": {
+      "total": 3.8,
+      "transactions": 1,
+      "average": 3.8
+    },
+    "HOSTED": {
+      "total": 3.57,
+      "transactions": 1,
+      "average": 3.57
+    },
+    "WHZLE": {
+      "total": 3.26,
+      "transactions": 1,
+      "average": 3.26
+    },
+    "TAX": {
+      "total": 2.57,
+      "transactions": 1,
+      "average": 2.57
+    },
+    "(KUChai) Sdn BHD": {
+      "total": 2.55,
+      "transactions": 1,
+      "average": 2.55
+    },
+    "RAIT": {
+      "total": 2.5,
+      "transactions": 1,
+      "average": 2.5
+    },
+    "D . [.Y. (KUCHAI) Sdn BHD": {
+      "total": 2.5,
+      "transactions": 1,
+      "average": 2.5
+    },
+    "RESTORAN IBRAHIM MAJU SB": {
+      "total": 2.3,
+      "transactions": 1,
+      "average": 2.3
+    },
+    "(KUCHA i ) SDN BHD": {
+      "total": 2.2,
+      "transactions": 1,
+      "average": 2.2
+    },
+    "(M) SDN BHD": {
+      "total": 2.2,
+      "transactions": 1,
+      "average": 2.2
+    },
+    "(M) Sdn BHD": {
+      "total": 2.14,
+      "transactions": 2,
+      "average": 1.07
+    },
+    "LIGHTROOM": {
+      "total": 2.02,
+      "transactions": 2,
+      "average": 1.01
+    },
+    "HENG": {
+      "total": 2.0,
+      "transactions": 1,
+      "average": 2.0
+    },
+    "DATARAN GL OMAC _": {
+      "total": 1.9,
+      "transactions": 1,
+      "average": 1.9
+    },
+    "DATARAN CLOMAC _": {
+      "total": 1.9,
+      "transactions": 1,
+      "average": 1.9
+    },
+    "BOok": {
+      "total": 1.9,
+      "transactions": 1,
+      "average": 1.9
+    },
+    "ASIA MART": {
+      "total": 1.85,
+      "transactions": 1,
+      "average": 1.85
+    },
+    "SUNFISH": {
+      "total": 1.62,
+      "transactions": 1,
+      "average": 1.62
+    },
+    "F&p PHARMACY": {
+      "total": 1.22,
+      "transactions": 1,
+      "average": 1.22
+    },
+    "TED HENG STATIONERY & BQDKS": {
+      "total": 1.05,
+      "transactions": 1,
+      "average": 1.05
+    },
+    "DOLLAR TREE": {
+      "total": 1.0,
+      "transactions": 1,
+      "average": 1.0
+    },
+    "CROSS CHANNEL NETWORK SDN: BHD:": {
+      "total": 1.0,
+      "transactions": 1,
+      "average": 1.0
+    },
+    "COMPANY": {
+      "total": 1.0,
+      "transactions": 1,
+      "average": 1.0
+    },
+    "BHPetrol Palekbang": {
+      "total": 1.0,
+      "transactions": 1,
+      "average": 1.0
+    },
+    "AIK": {
+      "total": 0.85,
+      "transactions": 1,
+      "average": 0.85
+    },
+    "D.I.Y. (M) Sdn BHD": {
+      "total": 0.84,
+      "transactions": 1,
+      "average": 0.84
+    },
+    "AEON CG_": {
+      "total": 0.7,
+      "transactions": 1,
+      "average": 0.7
+    },
+    "Your order number is": {
+      "total": 0.48,
+      "transactions": 1,
+      "average": 0.48
+    },
+    "SAINT HEART PASTRY": {
+      "total": 0.46,
+      "transactions": 1,
+      "average": 0.46
+    },
+    "SYARIKAT PERNIACAAN GIN KEE": {
+      "total": 0.36,
+      "transactions": 1,
+      "average": 0.36
+    },
+    "MyMydin Subang Bestari 2300": {
+      "total": 0.31,
+      "transactions": 1,
+      "average": 0.31
+    },
+    "HARDWARE": {
+      "total": 0.3,
+      "transactions": 1,
+      "average": 0.3
+    },
+    "78 euoks": {
+      "total": 0.28,
+      "transactions": 1,
+      "average": 0.28
+    },
+    "TRI SHAAS SDN BHD": {
+      "total": 0.02,
+      "transactions": 1,
+      "average": 0.02
+    },
+    "IMAGE PRINTEC (M) SDN BHD": {
+      "total": 0.02,
+      "transactions": 1,
+      "average": 0.02
+    },
+    "kox2x": {
+      "total": 0.01,
+      "transactions": 1,
+      "average": 0.01
+    },
+    "EVERGREEN LIGHT SON BHD": {
+      "total": 0.01,
+      "transactions": 1,
+      "average": 0.01
+    },
+    "EVERGREEN LIGHT SDN BHD": {
+      "total": 0.01,
+      "transactions": 1,
+      "average": 0.01
+    },
+    "si80z0ll": {
+      "total": 0.01,
+      "transactions": 1,
+      "average": 0.01
     }
   },
-  "max_single_transaction": 30032.0,
-  "min_single_transaction": 6.0
+  "daily_spend_last_7_days": [
+    {
+      "date": "2026-04-21",
+      "weekday": "Tue",
+      "amount": 0.0
+    },
+    {
+      "date": "2026-04-22",
+      "weekday": "Wed",
+      "amount": 0.0
+    },
+    {
+      "date": "2026-04-23",
+      "weekday": "Thu",
+      "amount": 0.0
+    },
+    {
+      "date": "2026-04-24",
+      "weekday": "Fri",
+      "amount": 0.0
+    },
+    {
+      "date": "2026-04-25",
+      "weekday": "Sat",
+      "amount": 0.0
+    },
+    {
+      "date": "2026-04-26",
+      "weekday": "Sun",
+      "amount": 0.0
+    },
+    {
+      "date": "2026-04-27",
+      "weekday": "Mon",
+      "amount": 0.0
+    }
+  ],
+  "extracted_fields_count": 1260,
+  "validated_fields_count": 500,
+  "overall_confidence": 0.699,
+  "low_confidence_receipt_count": 269
 }

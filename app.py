@@ -894,6 +894,16 @@ try:
 except Exception:
     pass
 
+# ── Cache-version guard ──────────────────────────────────────────────────────
+# Bump this string whenever extraction logic changes so stale cached results
+# from previous code versions are automatically discarded.
+_CACHE_VERSION = "v2.5-items-date-fix"
+
+if st.session_state.get("_cache_version") != _CACHE_VERSION:
+    st.cache_data.clear()
+    st.session_state.clear()
+    st.session_state["_cache_version"] = _CACHE_VERSION
+
 # Drop stale session results from an older schema (prevents KeyError on
 # missing keys like currency_symbol / subtotal / tax after a code update).
 if "results" in st.session_state:

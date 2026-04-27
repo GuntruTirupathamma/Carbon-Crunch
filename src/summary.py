@@ -73,11 +73,24 @@ def generate_summary(results: List[Dict]) -> Dict:
     validated_fields = 0
 
     for r in successes:
-        amt = _to_float(r.get("total_amount"))
+        # Unwrap nested {value, confidence} dicts produced by main.py
+        total_block  = r.get("total_amount") or {}
+        store_block  = r.get("store_name") or {}
+        date_block   = r.get("date") or {}
+
+        total_val = total_block.get("value") if isinstance(total_block, dict) else total_block
+        store_val = store_block.get("value") if isinstance(store_block, dict) else store_block
+        date_val  = date_block.get("value")  if isinstance(date_block,  dict) else date_block
+
+        total_conf_val = total_block.get("confidence", 0) if isinstance(total_block, dict) else 0
+        store_conf_val = store_block.get("confidence", 0) if isinstance(store_block, dict) else 0
+        date_conf_val  = date_block.get("confidence", 0)  if isinstance(date_block,  dict) else 0
+
+        amt = _to_float(total_val)
         if amt is None or amt <= 0:
             continue
 
-        store = (r.get("store_name") or "Unknown").strip() or "Unknown"
+        store    = (store_val or "Unknown").strip() or "Unknown"
         category = (r.get("category") or "Uncategorized").strip() or "Uncategorized"
 
         valid_amounts.append(amt)
@@ -87,25 +100,28 @@ def generate_summary(results: List[Dict]) -> Dict:
         per_category_count[category] += 1
 
         # Daily aggregation
-        dt = _parse_date(r.get("date"))
+        dt = _parse_date(date_val)
         if dt:
             parsed_dates.append(dt)
             day_key = dt.strftime("%Y-%m-%d")
             daily_spend[day_key] += amt
 
-        # Confidence stats
-        oc = r.get("overall_conf", 0)
-        if oc:
-            overall_confs.append(oc)
+        # Overall confidence — average of the three main field confidences
+        field_confs = [c for c in [store_conf_val, date_conf_val, total_conf_val] if c > 0]
+        if field_confs:
+            overall_confs.append(sum(field_confs) / len(field_confs))
 
-        # Field counts (for the "Extracted Fields / Validated Fields" stat)
-        for field in ("store_name", "date", "total_amount"):
-            if r.get(field):
+        # Field extraction / validation counts
+        for conf_val, raw_val in [
+            (store_conf_val, store_val),
+            (date_conf_val,  date_val),
+            (total_conf_val, total_val),
+        ]:
+            if raw_val:
                 extracted_fields += 1
-            field_conf = r.get(f"{field.replace('total_amount','total')}_conf", 0)
-            if field_conf >= 0.7:
+            if conf_val >= 0.7:
                 validated_fields += 1
-        # Items also count as extracted+validated fields
+        # Items also count
         extracted_fields += r.get("n_items", 0)
 
         if r.get("low_confidence_flags"):

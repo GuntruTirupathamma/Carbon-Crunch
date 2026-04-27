@@ -93,6 +93,10 @@ STORE_NAME_NOISE = [
     "tel:", "phone", "address",
     "thank", "welcome", "receipt",
     "invoice", "bill no", "bill #", "order #",
+    # marketing / competition text at top of many receipts
+    "see back", "back of", "chance to win", "win $", "win ₹",
+    "your chance", "sweepstakes", "survey", "coupon",
+    "save today", "special offer",
 ]
 
 
@@ -202,12 +206,24 @@ def _merge_lines_into_rows(lines: List[Dict]) -> List[Dict]:
 
 # ── Extractors ───────────────────────────────────────────────────────────────
 def extract_date(lines: List[Dict]) -> Optional[Tuple[str, float]]:
-    """Returns (date_string, confidence) or None."""
+    """
+    Returns (date_string, confidence) or None.
+    Validates that the matched text actually parses as a calendar date
+    (not a price like '6-10.00' that superficially matches the date regex).
+    """
+    from src.confidence import validate_date as _vd
     for line in lines:
         for pattern in DATE_PATTERNS:
             m = re.search(pattern, line["text"], re.IGNORECASE)
             if m:
-                return m.group(1), line["confidence"] * 0.95
+                candidate = m.group(1)
+                # Reject if it looks like a currency value (contains decimal .NN at end)
+                if re.search(r"\.\d{2}$", candidate):
+                    continue
+                # Reject if validate_date gives very low score (probably not a real date)
+                if _vd(candidate) < 0.4:
+                    continue
+                return candidate, line["confidence"] * 0.95
     return None
 
 
@@ -215,11 +231,13 @@ def extract_store_name(lines: List[Dict]) -> Tuple[str, float]:
     """
     Heuristic: store name is one of the first few alpha-dominant lines,
     long enough to be a real name, not a tagline or address line.
+    Extended to scan up to 10 lines to skip common receipt header marketing copy.
     """
     if not lines:
         return "Unknown", 0.0
 
-    for idx, line in enumerate(lines[:6]):
+    # Expand search window — some receipts have 2-3 header lines before the brand
+    for idx, line in enumerate(lines[:10]):
         text = line["text"].strip()
         text_lower = text.lower()
 
@@ -236,8 +254,15 @@ def extract_store_name(lines: List[Dict]) -> Tuple[str, float]:
         # Skip very short single-letter combinations
         if sum(1 for c in text if c.isalpha()) < 3:
             continue
+        # Skip if it reads like a full sentence (store names are ≤ 6 words usually)
+        word_count = len(text.split())
+        if word_count > 7:
+            continue
+        # Skip obvious contest / marketing lines
+        if re.search(r"\$\d{3,}|#\s*\d{6,}", text):
+            continue
 
-        position_bonus = 0.10 if idx == 0 else (0.05 if idx == 1 else 0.0)
+        position_bonus = 0.10 if idx == 0 else (0.07 if idx == 1 else 0.04 if idx <= 3 else 0.0)
         # Boost: ALL CAPS short words at the top are usually brand names
         if text.isupper() and 3 <= len(text) <= 30:
             position_bonus += 0.05
@@ -253,9 +278,9 @@ def extract_total(lines: List[Dict]) -> Optional[Tuple[str, float]]:
     Find the total amount.
 
     Priority:
-      1. "Grand Total" keyword line
+      1. "Grand Total" keyword line (merged row)
       2. "Net Total / Amount Due / Balance Due"
-      3. "Total" (alone)
+      3. "Total" (alone) — checked both in merged text AND via bbox right-column lookup
       4. Other total-like keywords
       5. Fallback — most-frequent or bottom-half largest plausible currency value
     """
@@ -263,7 +288,9 @@ def extract_total(lines: List[Dict]) -> Optional[Tuple[str, float]]:
     # together, even when EasyOCR returned them as separate detections.
     merged = _merge_lines_into_rows(lines)
     full_text = " ".join(l["text"] for l in merged)
+    raw_full  = " ".join(l["text"] for l in lines)
 
+    # ── PASS 1: scan merged rows (handles receipts where EasyOCR already joins columns) ──
     candidates = []
     for i, line in enumerate(merged):
         text_lower = line["text"].lower()
@@ -271,26 +298,31 @@ def extract_total(lines: List[Dict]) -> Optional[Tuple[str, float]]:
         # Skip lines that are clearly NOT totals
         if any(neg in text_lower for neg in
                ["subtotal", "sub total", "sub-total",
-                "discount", "rounding", "tax", "gst", "vat"]):
+                "discount", "rounding", "tax", "gst", "vat",
+                "cash", "change", "tender", "tendered"]):
             continue
 
         for keyword, priority in TOTAL_KEYWORDS_PRIORITIZED:
             if keyword in text_lower:
-                # Find decimal price in this row first
-                matches = list(DECIMAL_CURRENCY_RE.finditer(line["text"]))
+                # Strip UPC/barcodes before searching for the price
+                clean_text = _UPC_RE.sub(" ", line["text"])
+                matches = list(DECIMAL_CURRENCY_RE.finditer(clean_text))
                 price_str = None
                 if matches:
                     price_str = matches[-1].group(1)
                 elif i + 1 < len(merged):
-                    next_decimals = list(DECIMAL_CURRENCY_RE.finditer(
-                        merged[i + 1]["text"]))
-                    if next_decimals:
-                        price_str = next_decimals[-1].group(1)
+                    # Only look at next line if it doesn't look like cash/change
+                    next_text_lower = merged[i + 1]["text"].lower()
+                    if not any(x in next_text_lower for x in
+                               ["cash", "change", "tender", "tax", "gst"]):
+                        next_clean = _UPC_RE.sub(" ", merged[i + 1]["text"])
+                        next_decimals = list(DECIMAL_CURRENCY_RE.finditer(next_clean))
+                        if next_decimals:
+                            price_str = next_decimals[-1].group(1)
 
                 if price_str:
                     parsed = _parse_amount(price_str)
-                    # Reject date fragments masquerading as currency
-                    if _looks_like_date_fragment(price_str, full_text):
+                    if _looks_like_date_fragment(price_str, raw_full):
                         continue
                     if parsed is not None and 0.01 <= parsed < 1_000_000:
                         decimal_bonus = 0.05 if "." in price_str else -0.10
@@ -307,12 +339,86 @@ def extract_total(lines: List[Dict]) -> Optional[Tuple[str, float]]:
         best = candidates[0]
         return best["value"], best["confidence"]
 
+    # ── PASS 2: bbox-aware right-column lookup (handles split-column receipts) ──
+    # This catches Walmart-style receipts where "TOTAL" (left) and "144.02" (right)
+    # are separate OCR detections that vertical-overlap but aren't text-merged.
+    total_kws = [kw for kw, _ in TOTAL_KEYWORDS_PRIORITIZED
+                 if kw not in ("amount", "amt", "net", "sum", "balance")]
+    _filtered_lines = [
+        l for l in lines
+        if not any(x in l["text"].lower()
+                   for x in ["subtotal", "sub total", "tax", "gst", "vat",
+                              "discount", "cash", "change", "tender"])
+    ]
+    res = _find_keyword_value_with_bbox(_filtered_lines, total_kws, raw_full,
+                                        min_overlap=0.2)
+    if res:
+        val, conf = res
+        return f"{val:.2f}", min(1.0, conf * 0.90)
+
+    # ── PASS 3: simple y-center proximity scan (most robust — no bbox required) ──
+    # For each raw line containing a total keyword, find the nearest decimal number
+    # within 80px y-distance.  Works even when OCR returns no bbox data.
+    TOTAL_KW_SET = {kw for kw, _ in TOTAL_KEYWORDS_PRIORITIZED
+                    if kw not in ("amount", "amt", "net", "sum", "balance")}
+    SKIP_KW_SET  = {"subtotal", "sub total", "sub-total", "tax", "gst", "vat",
+                    "discount", "cash", "change", "tender", "tendered", "debit",
+                    "credit"}
+    _pass3_candidates = []
+    for kw_line in lines:
+        tl = kw_line["text"].lower()
+        if any(s in tl for s in SKIP_KW_SET):
+            continue
+        if not any(kw in tl for kw in TOTAL_KW_SET):
+            continue
+        kw_y = kw_line["y_center"]
+
+        # Search for a decimal value in this line first
+        clean = _UPC_RE.sub(" ", kw_line["text"])
+        m = DECIMAL_CURRENCY_RE.search(clean)
+        if m:
+            price_str = m.group(1)
+            if not _looks_like_date_fragment(price_str, raw_full):
+                parsed = _parse_amount(price_str)
+                if parsed and 0.01 <= parsed < 1_000_000:
+                    _pass3_candidates.append((0, parsed, kw_line["confidence"]))
+            continue
+
+        # Not in same line — search nearby lines by y-center distance
+        for other in lines:
+            if other is kw_line:
+                continue
+            y_dist = abs(other["y_center"] - kw_y)
+            if y_dist > 80:
+                continue
+            ot = other["text"].lower()
+            if any(s in ot for s in SKIP_KW_SET):
+                continue
+            clean2 = _UPC_RE.sub(" ", other["text"])
+            m2 = DECIMAL_CURRENCY_RE.search(clean2)
+            if not m2:
+                continue
+            price_str = m2.group(1)
+            if _looks_like_date_fragment(price_str, raw_full):
+                continue
+            parsed = _parse_amount(price_str)
+            if parsed and 0.01 <= parsed < 1_000_000:
+                _pass3_candidates.append((y_dist, parsed, other["confidence"]))
+
+    if _pass3_candidates:
+        # Prefer closest to keyword line, then highest value
+        _pass3_candidates.sort(key=lambda x: (x[0], -x[1]))
+        _, val, conf = _pass3_candidates[0]
+        return f"{val:.2f}", conf * 0.80
+
     # ── Fallback: collect plausible decimal amounts from merged rows ─────
     all_amounts = []
     for line in merged:
-        text = line["text"].strip()
-        # Skip noise
-        if re.search(r"\d{6,}", text):           continue   # SKUs/codes
+        text = _UPC_RE.sub(" ", line["text"]).strip()   # strip barcodes first
+        text_lower = text.lower()
+        # Skip cash-tender / change lines — they're larger than the total
+        if any(x in text_lower for x in ["cash", "change", "tender", "credit", "debit"]):
+            continue
         if re.search(r"[A-Z]{2,}\d{4,}", text):  continue   # ITC5679...
         if len(re.findall(r"\d", text)) > 12:    continue   # transaction ids
 
@@ -321,8 +427,7 @@ def extract_total(lines: List[Dict]) -> Optional[Tuple[str, float]]:
             parsed = _parse_amount(raw)
             if parsed is None or not (0.01 <= parsed <= 100_000):
                 continue
-            # Critical: skip date fragments like '13.12' from '13.12.01'
-            if _looks_like_date_fragment(raw, full_text):
+            if _looks_like_date_fragment(raw, raw_full):
                 continue
             all_amounts.append((parsed, line["confidence"], line["y_center"]))
 
@@ -349,6 +454,7 @@ def extract_total(lines: List[Dict]) -> Optional[Tuple[str, float]]:
         return f"{v:.2f}", c * 0.45
 
     return None
+
 
 
 def _find_value_after_keyword(text: str, keywords: list, full_text: str,
@@ -384,7 +490,8 @@ def _find_value_after_keyword(text: str, keywords: list, full_text: str,
 
 def _find_keyword_value_with_bbox(lines: List[Dict], keywords: list,
                                    full_text: str,
-                                   max_value: float = 1_000_000
+                                   max_value: float = 1_000_000,
+                                   min_overlap: float = 0.4,
                                    ) -> Optional[Tuple[float, float]]:
     """
     For each line containing a keyword, find a value in the SAME ROW
@@ -427,7 +534,7 @@ def _find_keyword_value_with_bbox(lines: List[Dict], keywords: list,
         for other in lines:
             if other is kw_line:
                 continue
-            if not _vertically_overlap(kw_line, other, min_overlap=0.4):
+            if not _vertically_overlap(kw_line, other, min_overlap=min_overlap):
                 continue
             other_x_start = min(pt[0] for pt in other["bbox"]) if other.get("bbox") else 0
             if other_x_start < kw_x_end:
@@ -556,6 +663,29 @@ def detect_currency(lines: List[Dict]) -> Tuple[str, str]:
     return "$", "USD"
 
 
+# UPC / barcode pattern — 12-digit retail barcodes and internal store codes
+_UPC_RE = re.compile(r"\b\d{10,}\b")
+# Single trailing tax/status codes on Walmart receipts (e.g. " F", " N", " X", " 0")
+_TRAIL_CODE_RE = re.compile(r"\s+[A-Z0]\s*$")
+
+
+def _strip_receipt_codes(text: str) -> str:
+    """
+    Remove UPC barcodes and trailing tax flag characters from a receipt line
+    so that item descriptions and prices can be extracted cleanly.
+
+    Example:
+        'TATER TOTS  003131200036 F   2.98 0'
+        → 'TATER TOTS 2.98'
+    """
+    # Remove long numeric codes (UPC, SKU)
+    text = _UPC_RE.sub(" ", text)
+    # Remove trailing single-letter tax/status flags
+    text = _TRAIL_CODE_RE.sub("", text)
+    # Collapse whitespace
+    return re.sub(r"\s{2,}", " ", text).strip()
+
+
 def extract_items(lines: List[Dict]) -> List[Dict]:
     """
     Extract line-items using row-merged OCR output.
@@ -563,21 +693,34 @@ def extract_items(lines: List[Dict]) -> List[Dict]:
     Receipts are columnar — OCR often splits 'BANANAS' (left) and '0.20' (right)
     into two separate detections. We first merge by y-coordinate, THEN look for
     the '<text> ... <decimal-price>' pattern.
+
+    UPC codes (12+ digits) are stripped *before* pattern matching so that
+    Walmart / supermarket receipts are not silently dropped.
     """
     merged = _merge_lines_into_rows(lines)
     full_text = " ".join(l["text"] for l in merged)
     items = []
 
     for line in merged:
-        text = line["text"].strip()
-        text_lower = text.lower()
+        raw_text = line["text"].strip()
+        text_lower = raw_text.lower()
 
-        # Skip summary / header / footer
+        # Skip summary / header / footer  (check BOTH raw and stripped text)
         if any(k in text_lower for k in ITEM_SKIP_KEYWORDS):
             continue
-        # Skip noisy code rows
-        if re.search(r"\d{6,}", text):           continue
-        if re.search(r"[A-Z]{2,}\d{4,}", text):  continue
+
+        # Strip UPC / store codes before any further processing
+        text = _strip_receipt_codes(raw_text)
+        if not text:
+            continue
+
+        # Re-check skip keywords on the cleaned text
+        if any(k in text.lower() for k in ITEM_SKIP_KEYWORDS):
+            continue
+
+        # Skip rows that are ONLY codes/numbers (e.g. barcode-only lines)
+        if re.search(r"[A-Z]{2,}\d{4,}", text):
+            continue
 
         # Looser pattern: row contains a decimal price somewhere
         price_matches = list(DECIMAL_CURRENCY_RE.finditer(text))
@@ -600,7 +743,7 @@ def extract_items(lines: List[Dict]) -> List[Dict]:
         alpha_count = sum(1 for c in name if c.isalpha())
         if alpha_count < 3:                    continue
         if len(name) > 80:                     continue
-        if _alpha_ratio(name) < 0.35:          continue
+        if _alpha_ratio(name) < 0.25:          continue  # relaxed for codes still present
         if name.count("#") >= 2:               continue
         if name.count(":") >= 2:               continue
 

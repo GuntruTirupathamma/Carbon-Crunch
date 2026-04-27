@@ -27,6 +27,7 @@ from src.preprocess import preprocess, save_preview
 from src.ocr import run_ocr, get_full_text, get_average_confidence
 from src.extractor import (
     extract_date, extract_store_name, extract_total, extract_items,
+    detect_category, detect_currency,
 )
 from src.confidence import (
     adjust_confidence, collect_low_confidence_flags,
@@ -74,6 +75,10 @@ def process_receipt(image_path: Path,
     total_result = extract_total(lines)
     items_raw = extract_items(lines)
 
+    # Detect category and currency (needed for financial summary)
+    category, category_conf = detect_category(store_name or "", raw_text)
+    currency_symbol, currency_code = detect_currency(lines)
+
     # 4. Apply field-level confidence scoring (validation factor)
     date_value = date_result[0] if date_result else None
     date_raw_conf = date_result[1] if date_result else 0.0
@@ -89,7 +94,7 @@ def process_receipt(image_path: Path,
     for it in items_raw:
         price_conf = adjust_confidence("price", it["price"], it["confidence"])
         items.append({
-            "name": it["name"],
+            "name": it["description"],
             "price": {
                 "value": it["price"],
                 "confidence": price_conf,
@@ -122,9 +127,16 @@ def process_receipt(image_path: Path,
             "confidence": date_conf,
         },
         "items": items,
+        "n_items": len(items),
         "total_amount": {
             "value": total_value,
             "confidence": total_conf,
+        },
+        "category": category,
+        "category_confidence": round(category_conf, 3),
+        "currency": {
+            "symbol": currency_symbol,
+            "code": currency_code,
         },
         "low_confidence_flags": low_conf_flags,
         "metadata": {
@@ -221,8 +233,11 @@ def main():
     parser = argparse.ArgumentParser(
         description="Carbon Crunch — OCR receipt extraction pipeline"
     )
-    parser.add_argument("--input", type=Path, default=Path("data/receipts"),
-                        help="Folder containing receipt images")
+    parser.add_argument(
+        "--input", type=Path,
+        default=Path(r"C:\Users\guntr\OneDrive\Documents\AI-OCR dataset\AI-OCR dataset"),
+        help="Folder containing receipt images",
+    )
     parser.add_argument("--output", type=Path, default=Path("outputs"),
                         help="Folder to write JSON + summary outputs")
     parser.add_argument("--no-preview", action="store_true",

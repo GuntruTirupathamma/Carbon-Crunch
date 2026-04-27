@@ -29,6 +29,7 @@ VALID_DATE_FORMATS = [
     "%d/%m/%y", "%d-%m-%y", "%d.%m.%y",
     "%Y-%m-%d", "%Y/%m/%d", "%Y.%m.%d",
     "%m/%d/%Y", "%m-%d-%Y",
+    "%m/%d/%y", "%m-%d-%y",          # US 2-digit year: 04/27/19
     "%d %b %Y", "%d %B %Y",
     "%b %d, %Y", "%B %d, %Y",
     "%b %d %Y", "%B %d %Y",
