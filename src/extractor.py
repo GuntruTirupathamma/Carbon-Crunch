@@ -88,15 +88,9 @@ ITEM_SKIP_KEYWORDS = [
 # Lines containing these are usually header/footer noise — skip when finding
 # the store name
 STORE_NAME_NOISE = [
-    "always low",  # "Always Low Prices" tagline
-    "supercenter", "open ", "manager",
-    "tel:", "phone", "address",
-    "thank", "welcome", "receipt",
-    "invoice", "bill no", "bill #", "order #",
-    # marketing / competition text at top of many receipts
-    "see back", "back of", "chance to win", "win $", "win ₹",
-    "your chance", "sweepstakes", "survey", "coupon",
-    "save today", "special offer",
+    "save today", "special offer", "survey", "chance to win",
+    "see back", "back of receipt", "for your chance",
+    "win $", "win ₹", "win 1000", "win 5000",
 ]
 
 
@@ -266,6 +260,15 @@ def extract_store_name(lines: List[Dict]) -> Tuple[str, float]:
         # Boost: ALL CAPS short words at the top are usually brand names
         if text.isupper() and 3 <= len(text) <= 30:
             position_bonus += 0.05
+        
+        # Boost: Known major retailers
+        known_retailers = ["walmart", "spar", "target", "costco", "kroger", "tesco"]
+        if any(retailer in text_lower for retailer in known_retailers):
+            position_bonus += 0.20
+            # Clean up fuzzy OCR errors (e.g. "WALAMART" -> "Walmart")
+            if "wal" in text_lower and "mart" in text_lower: text = "Walmart"
+            if "spar" in text_lower: text = "SPAR"
+
         conf = min(1.0, line["confidence"] * 0.90 + position_bonus)
         return text, conf
 
@@ -299,9 +302,10 @@ def extract_total(lines: List[Dict]) -> Optional[Tuple[str, float]]:
         # But only if they don't contain a strong "total" keyword as a separate word
         if any(neg in text_lower for neg in
                ["discount", "rounding", "tax", "gst", "vat",
-                "cash", "change", "tender", "tendered", "debit", "credit"]):
-            # Exception: "TOTAL TAX" might be near the total, but "TAX" alone should be skipped
-            if not ("total" in text_lower and len(text_lower.split()) < 4):
+                "cash", "change", "tender", "tendered", "debit", "credit", "pay from"]):
+            # Exception: "TOTAL" alone or as a primary word should not be skipped
+            is_pure_total = text_lower.strip() == "total" or text_lower.startswith("total ")
+            if not is_pure_total:
                 continue
 
         for keyword, priority in TOTAL_KEYWORDS_PRIORITIZED:
