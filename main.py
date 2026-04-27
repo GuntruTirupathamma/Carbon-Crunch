@@ -27,7 +27,7 @@ from src.preprocess import preprocess, save_preview
 from src.ocr import run_ocr, get_full_text, get_average_confidence
 from src.extractor import (
     extract_date, extract_store_name, extract_total, extract_items,
-    detect_category, detect_currency,
+    detect_category, detect_currency, calculate_sum_of_items,
 )
 from src.confidence import (
     adjust_confidence, collect_low_confidence_flags,
@@ -86,6 +86,14 @@ def process_receipt(image_path: Path,
 
     total_value = total_result[0] if total_result else None
     total_raw_conf = total_result[1] if total_result else 0.0
+
+    # Fallback to sum of items if total is missing
+    if not total_value and items_raw:
+        sum_items = calculate_sum_of_items(items_raw)
+        if sum_items > 0:
+            total_value = f"{sum_items:.2f}"
+            total_raw_conf = 0.50  # low confidence fallback
+
     total_conf = adjust_confidence("total_amount", total_value, total_raw_conf)
 
     store_conf = adjust_confidence("store_name", store_name, store_raw_conf)

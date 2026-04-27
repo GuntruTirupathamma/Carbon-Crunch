@@ -23,6 +23,7 @@ from src.ocr import run_ocr, get_average_confidence
 from src.extractor import (
     extract_date, extract_store_name, extract_total, extract_items,
     extract_subtotal, extract_tax, detect_currency, detect_category,
+    calculate_sum_of_items,
 )
 from src.summary import generate_summary
 from src.confidence import adjust_confidence
@@ -839,12 +840,21 @@ def _cached_extract(file_bytes: bytes, filename: str) -> dict:
 
     date_v     = date_res[0]     if date_res     else None
     total_v    = total_res[0]    if total_res    else None
+    total_raw_conf = total_res[1] if total_res else 0.0
+
+    # Fallback to sum of items if total is missing
+    if not total_v and items_raw:
+        sum_val = calculate_sum_of_items(items_raw)
+        if sum_val > 0:
+            total_v = f"{sum_val:.2f}"
+            total_raw_conf = 0.50  # low confidence fallback
+    
     subtotal_v = subtotal_res[0] if subtotal_res else None
     tax_v      = tax_res[0]      if tax_res      else None
 
     store_c = adjust_confidence("store_name", store_name, store_raw)
     date_c  = adjust_confidence("date", date_v, date_res[1] if date_res else 0)
-    total_c = adjust_confidence("total_amount", total_v, total_res[1] if total_res else 0)
+    total_c = adjust_confidence("total_amount", total_v, total_raw_conf)
     overall = (store_c * 0.25 + date_c * 0.25 + total_c * 0.5)
 
     carbon = 0.0
@@ -897,7 +907,7 @@ except Exception:
 # ── Cache-version guard ──────────────────────────────────────────────────────
 # Bump this string whenever extraction logic changes so stale cached results
 # from previous code versions are automatically discarded.
-_CACHE_VERSION = "v2.5-items-date-fix"
+_CACHE_VERSION = "v2.6-revenue-fix"
 
 if st.session_state.get("_cache_version") != _CACHE_VERSION:
     st.cache_data.clear()

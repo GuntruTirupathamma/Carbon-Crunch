@@ -54,15 +54,15 @@ PRICE_LINE_RE = re.compile(
 )
 
 TOTAL_KEYWORDS_PRIORITIZED = [
-    ("grand total", 0),
-    ("grandtotal", 0),
-    ("net total", 1),
-    ("nett total", 1),
+    ("total purchase", 1),
+    ("purchase total", 1),
     ("total amount", 1),
     ("amount due", 1),
     ("balance due", 1),
     ("amount payable", 1),
+    ("total due", 1),
     ("total", 2),
+    ("purchase", 3),
     ("amount", 3),
     ("amt", 3),
     ("net", 3),
@@ -296,11 +296,13 @@ def extract_total(lines: List[Dict]) -> Optional[Tuple[str, float]]:
         text_lower = line["text"].lower()
 
         # Skip lines that are clearly NOT totals
+        # But only if they don't contain a strong "total" keyword as a separate word
         if any(neg in text_lower for neg in
-               ["subtotal", "sub total", "sub-total",
-                "discount", "rounding", "tax", "gst", "vat",
-                "cash", "change", "tender", "tendered"]):
-            continue
+               ["discount", "rounding", "tax", "gst", "vat",
+                "cash", "change", "tender", "tendered", "debit", "credit"]):
+            # Exception: "TOTAL TAX" might be near the total, but "TAX" alone should be skipped
+            if not ("total" in text_lower and len(text_lower.split()) < 4):
+                continue
 
         for keyword, priority in TOTAL_KEYWORDS_PRIORITIZED:
             if keyword in text_lower:
@@ -454,6 +456,19 @@ def extract_total(lines: List[Dict]) -> Optional[Tuple[str, float]]:
         return f"{v:.2f}", c * 0.45
 
     return None
+
+
+def calculate_sum_of_items(items: List[Dict]) -> float:
+    """Calculate the mathematical sum of all extracted line items."""
+    total = 0.0
+    for item in items:
+        try:
+            p = item.get("price", "0")
+            q = item.get("quantity", 1)
+            total += float(p) * float(q)
+        except (ValueError, TypeError):
+            continue
+    return total
 
 
 
@@ -706,7 +721,16 @@ def extract_items(lines: List[Dict]) -> List[Dict]:
         text_lower = raw_text.lower()
 
         # Skip summary / header / footer  (check BOTH raw and stripped text)
-        if any(k in text_lower for k in ITEM_SKIP_KEYWORDS):
+        # Skip summary / header / footer
+        # Strong match: line consists ALMOST entirely of skip keywords
+        is_skip = False
+        for k in ITEM_SKIP_KEYWORDS:
+            if k in text_lower:
+                # If the line IS the keyword (e.g. "TOTAL"), skip it
+                if text_lower == k or text_lower.startswith(k + " ") or text_lower.endswith(" " + k):
+                    is_skip = True
+                    break
+        if is_skip:
             continue
 
         # Strip UPC / store codes before any further processing
