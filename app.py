@@ -312,4 +312,3 @@ if uploaded_files:
             col_a.write(f"**Date:** {r['date']['value']}")
             col_b.write(f"**Total:** ${r['total_amount']['value']}")
             col_b.write(f"**Items:** {r['n_items']}")
-Pass
