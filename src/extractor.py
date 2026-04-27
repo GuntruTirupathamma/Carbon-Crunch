@@ -25,11 +25,10 @@ import numpy as np
 DATE_PATTERNS = [
     # 12/04/2026, 12-04-26, 12.04.2026, 13.12.01
     r"\b(\d{1,2}[/\-.]\d{1,2}[/\-.]\d{2,4})\b",
-    # 2026-04-12, 2026/04/12
-    r"\b(\d{4}[/\-.]\d{1,2}[/\-.]\d{1,2})\b",
-    # 12 Apr 2026, 12 April 2026
-    r"\b(\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)"
-    r"[a-z]*\s+\d{2,4})\b",
+    # Match DD/MM/YYYY, MM/DD/YY, DD.MM.YY etc. (allowing spaces for OCR noise)
+    r"\b(\d{1,2}\s?[/\-.]\s?\d{1,2}\s?[/\-.]\s?\d{2,4})\b",
+    # Match abbreviated months: 27-Apr-2026 or 27 Apr 26
+    r"\b(\d{1,2}\s?(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s?\d{2,4})\b",
     # April 12, 2026
     r"\b((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+"
     r"\d{1,2},?\s+\d{2,4})\b",
@@ -55,16 +54,17 @@ PRICE_LINE_RE = re.compile(
 
 TOTAL_KEYWORDS_PRIORITIZED = [
     ("total purchase", 1),
-    ("purchase total", 1),
-    ("total amount", 1),
-    ("amount due", 1),
-    ("balance due", 1),
-    ("amount payable", 1),
-    ("total due", 1),
-    ("total", 2),
-    ("purchase", 3),
-    ("amount", 3),
-    ("amt", 3),
+    ("grand total", 100),
+    ("total", 90),
+    ("bal", 85),  # "BAL" or "BALANCE" common for Whole Foods
+    ("amount due", 80),
+    ("net amount", 75),
+    ("payment due", 70),
+    ("total purchase", 65),
+    ("purchase total", 65),
+    ("total due", 65),
+    ("total tax invoice", 60),
+    ("sum", 50),
     ("net", 3),
     ("sum", 4),
     ("balance", 4),
@@ -276,189 +276,63 @@ def extract_store_name(lines: List[Dict]) -> Tuple[str, float]:
     return lines[0]["text"], lines[0]["confidence"] * 0.4
 
 
-def extract_total(lines: List[Dict]) -> Optional[Tuple[str, float]]:
+def extract_total(lines: List[Dict], max_value: float = 1_000_000) -> Optional[Tuple[str, float]]:
     """
-    Find the total amount.
-
-    Priority:
-      1. "Grand Total" keyword line (merged row)
-      2. "Net Total / Amount Due / Balance Due"
-      3. "Total" (alone) — checked both in merged text AND via bbox right-column lookup
-      4. Other total-like keywords
-      5. Fallback — most-frequent or bottom-half largest plausible currency value
+    Find the total amount using a multi-pass approach:
+    1. Keyword proximity and positioning
+    2. Bbox-aware columnar lookup
+    3. Mathematical item-sum fallback
     """
-    # Use row-merged lines so 'TOTAL' (left col) and '5.11' (right col) end up
-    # together, even when EasyOCR returned them as separate detections.
-    merged = _merge_lines_into_rows(lines)
-    full_text = " ".join(l["text"] for l in merged)
-    raw_full  = " ".join(l["text"] for l in lines)
-
-    # ── PASS 1: scan merged rows (handles receipts where EasyOCR already joins columns) ──
+    raw_full = " ".join(l["text"] for l in lines)
     candidates = []
-    for i, line in enumerate(merged):
+    
+    # ── PASS 1: Keyword proximity with scoring ──
+    for i, line in enumerate(lines):
         text_lower = line["text"].lower()
-
-        # Skip lines that are clearly NOT totals
-        # But only if they don't contain a strong "total" keyword as a separate word
+        # Skip noise lines
         if any(neg in text_lower for neg in
                ["discount", "rounding", "tax", "gst", "vat",
                 "cash", "change", "tender", "tendered", "debit", "credit", "pay from"]):
-            # Exception: "TOTAL" alone or as a primary word should not be skipped
-            is_pure_total = text_lower.strip() == "total" or text_lower.startswith("total ")
-            if not is_pure_total:
+            if not (text_lower.strip() == "total" or text_lower.startswith("total ")):
                 continue
 
         for keyword, priority in TOTAL_KEYWORDS_PRIORITIZED:
             if keyword in text_lower:
-                # Strip UPC/barcodes before searching for the price
-                clean_text = _UPC_RE.sub(" ", line["text"])
-                matches = list(DECIMAL_CURRENCY_RE.finditer(clean_text))
-                price_str = None
-                if matches:
-                    price_str = matches[-1].group(1)
-                elif i + 1 < len(merged):
-                    # Only look at next line if it doesn't look like cash/change
-                    next_text_lower = merged[i + 1]["text"].lower()
-                    if not any(x in next_text_lower for x in
-                               ["cash", "change", "tender", "tax", "gst"]):
-                        next_clean = _UPC_RE.sub(" ", merged[i + 1]["text"])
-                        next_decimals = list(DECIMAL_CURRENCY_RE.finditer(next_clean))
-                        if next_decimals:
-                            price_str = next_decimals[-1].group(1)
-
-                if price_str:
-                    parsed = _parse_amount(price_str)
-                    if _looks_like_date_fragment(price_str, raw_full):
-                        continue
-                    if parsed is not None and 0.01 <= parsed < 1_000_000:
-                        decimal_bonus = 0.05 if "." in price_str else -0.10
-                        candidates.append({
-                            "value": f"{parsed:.2f}",
-                            "confidence": min(1.0,
-                                line["confidence"] * 0.92 + decimal_bonus),
-                            "priority": priority,
-                        })
-                        break
+                # Find number in this line or subsequent 2 lines
+                for j in range(i, min(i + 3, len(lines))):
+                    context = lines[j]["text"]
+                    context_clean = context.replace(",", "")
+                    vals = re.findall(DECIMAL_CURRENCY_RE, context_clean)
+                    for v in vals:
+                        try:
+                            fval = float(v)
+                            if 0.01 < fval < max_value:
+                                if _looks_like_date_fragment(v, raw_full): continue
+                                decimal_bonus = 0.05 if "." in v else 0.0
+                                bottom_bonus = (j / len(lines)) * 0.15
+                                keyword_score = priority / 100.0
+                                score = (keyword_score + lines[j]["confidence"] * 0.7 + 
+                                         decimal_bonus + bottom_bonus)
+                                candidates.append((f"{fval:.2f}", score))
+                        except ValueError:
+                            continue
+                break
 
     if candidates:
-        candidates.sort(key=lambda c: (c["priority"], -c["confidence"]))
-        best = candidates[0]
-        return best["value"], best["confidence"]
+        candidates.sort(key=lambda x: x[1], reverse=True)
+        return candidates[0]
 
-    # ── PASS 2: bbox-aware right-column lookup (handles split-column receipts) ──
-    # This catches Walmart-style receipts where "TOTAL" (left) and "144.02" (right)
-    # are separate OCR detections that vertical-overlap but aren't text-merged.
+    # ── PASS 2: Bbox-aware right-column lookup (Walmart style) ──
     total_kws = [kw for kw, _ in TOTAL_KEYWORDS_PRIORITIZED
                  if kw not in ("amount", "amt", "net", "sum", "balance")]
-    _filtered_lines = [
-        l for l in lines
-        if not any(x in l["text"].lower()
-                   for x in ["subtotal", "sub total", "tax", "gst", "vat",
-                              "discount", "cash", "change", "tender"])
-    ]
-    res = _find_keyword_value_with_bbox(_filtered_lines, total_kws, raw_full,
-                                        min_overlap=0.2)
+    filtered_lines = [l for l in lines if not any(x in l["text"].lower() for x in 
+                      ["tax", "gst", "vat", "cash", "change", "tender"])]
+    res = _find_keyword_value_with_bbox(filtered_lines, total_kws, raw_full)
     if res:
         val, conf = res
-        return f"{val:.2f}", min(1.0, conf * 0.90)
+        return f"{val:.2f}", conf * 0.9
 
-    # ── PASS 3: simple y-center proximity scan (most robust — no bbox required) ──
-    # For each raw line containing a total keyword, find the nearest decimal number
-    # within 80px y-distance.  Works even when OCR returns no bbox data.
-    TOTAL_KW_SET = {kw for kw, _ in TOTAL_KEYWORDS_PRIORITIZED
-                    if kw not in ("amount", "amt", "net", "sum", "balance")}
-    SKIP_KW_SET  = {"subtotal", "sub total", "sub-total", "tax", "gst", "vat",
-                    "discount", "cash", "change", "tender", "tendered", "debit",
-                    "credit"}
-    _pass3_candidates = []
-    for kw_line in lines:
-        tl = kw_line["text"].lower()
-        if any(s in tl for s in SKIP_KW_SET):
-            continue
-        if not any(kw in tl for kw in TOTAL_KW_SET):
-            continue
-        kw_y = kw_line["y_center"]
-
-        # Search for a decimal value in this line first
-        clean = _UPC_RE.sub(" ", kw_line["text"])
-        m = DECIMAL_CURRENCY_RE.search(clean)
-        if m:
-            price_str = m.group(1)
-            if not _looks_like_date_fragment(price_str, raw_full):
-                parsed = _parse_amount(price_str)
-                if parsed and 0.01 <= parsed < 1_000_000:
-                    _pass3_candidates.append((0, parsed, kw_line["confidence"]))
-            continue
-
-        # Not in same line — search nearby lines by y-center distance
-        for other in lines:
-            if other is kw_line:
-                continue
-            y_dist = abs(other["y_center"] - kw_y)
-            if y_dist > 80:
-                continue
-            ot = other["text"].lower()
-            if any(s in ot for s in SKIP_KW_SET):
-                continue
-            clean2 = _UPC_RE.sub(" ", other["text"])
-            m2 = DECIMAL_CURRENCY_RE.search(clean2)
-            if not m2:
-                continue
-            price_str = m2.group(1)
-            if _looks_like_date_fragment(price_str, raw_full):
-                continue
-            parsed = _parse_amount(price_str)
-            if parsed and 0.01 <= parsed < 1_000_000:
-                _pass3_candidates.append((y_dist, parsed, other["confidence"]))
-
-    if _pass3_candidates:
-        # Prefer closest to keyword line, then highest value
-        _pass3_candidates.sort(key=lambda x: (x[0], -x[1]))
-        _, val, conf = _pass3_candidates[0]
-        return f"{val:.2f}", conf * 0.80
-
-    # ── Fallback: collect plausible decimal amounts from merged rows ─────
-    all_amounts = []
-    for line in merged:
-        text = _UPC_RE.sub(" ", line["text"]).strip()   # strip barcodes first
-        text_lower = text.lower()
-        # Skip cash-tender / change lines — they're larger than the total
-        if any(x in text_lower for x in ["cash", "change", "tender", "credit", "debit"]):
-            continue
-        if re.search(r"[A-Z]{2,}\d{4,}", text):  continue   # ITC5679...
-        if len(re.findall(r"\d", text)) > 12:    continue   # transaction ids
-
-        for m in DECIMAL_CURRENCY_RE.finditer(text):
-            raw  = m.group(1)
-            parsed = _parse_amount(raw)
-            if parsed is None or not (0.01 <= parsed <= 100_000):
-                continue
-            if _looks_like_date_fragment(raw, raw_full):
-                continue
-            all_amounts.append((parsed, line["confidence"], line["y_center"]))
-
-    if all_amounts:
-        from collections import Counter
-        counter = Counter(round(v, 2) for v, _, _ in all_amounts)
-        most_common_val, freq = counter.most_common(1)[0]
-        if freq >= 2:
-            conf = max(c for v, c, _ in all_amounts if round(v, 2) == most_common_val)
-            return f"{most_common_val:.2f}", conf * 0.7
-
-        # Largest plausible value in the bottom half (totals are at the bottom)
-        n = len(merged)
-        if n > 1:
-            mid_y = merged[n // 2]["y_center"]
-            bottom = [(v, c) for v, c, y in all_amounts if y >= mid_y]
-            if bottom:
-                bottom.sort(key=lambda x: -x[0])
-                return f"{bottom[0][0]:.2f}", bottom[0][1] * 0.6
-
-        # Final fallback
-        all_amounts.sort(key=lambda x: -x[0])
-        v, c, _ = all_amounts[0]
-        return f"{v:.2f}", c * 0.45
-
+    return None
     return None
 
 
