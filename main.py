@@ -23,16 +23,16 @@ import time
 from pathlib import Path
 from typing import Dict, List
 
-from src.preprocess import preprocess, save_preview
-from src.ocr import run_ocr, get_full_text, get_average_confidence
-from src.extractor import (
+from preprocess import preprocess, save_preview
+from ocr import run_ocr, get_full_text, get_average_confidence
+from extractor import (
     extract_date, extract_store_name, extract_total, extract_items,
     detect_category, detect_currency, calculate_sum_of_items,
 )
-from src.confidence import (
+from confidence import (
     adjust_confidence, collect_low_confidence_flags,
 )
-from src.summary import generate_summary
+from summary import generate_summary
 
 
 logging.basicConfig(

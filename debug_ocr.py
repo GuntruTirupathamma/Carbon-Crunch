@@ -1,8 +1,8 @@
 """Quick diagnostic: run with venv/Scripts/python.exe debug_ocr.py"""
 from pathlib import Path
-from src.preprocess import preprocess
-from src.ocr import run_ocr
-from src.extractor import (
+from preprocess import preprocess
+from ocr import run_ocr
+from extractor import (
     extract_total, extract_items, extract_store_name, extract_date,
     _merge_lines_into_rows, DECIMAL_CURRENCY_RE, _UPC_RE
 )

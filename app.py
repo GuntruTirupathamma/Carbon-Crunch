@@ -15,18 +15,18 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
-from src.preprocess import (
+from preprocess import (
     enhance_contrast, denoise, deskew, resize_for_ocr,
     estimate_blur, to_grayscale,
 )
-from src.ocr import run_ocr, get_average_confidence
-from src.extractor import (
+from ocr import run_ocr, get_average_confidence
+from extractor import (
     extract_date, extract_store_name, extract_total, extract_items,
     extract_subtotal, extract_tax, detect_currency, detect_category,
     calculate_sum_of_items,
 )
-from src.summary import generate_summary
-from src.confidence import adjust_confidence
+from summary import generate_summary
+from confidence import adjust_confidence
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -907,7 +907,7 @@ except Exception:
 # ── Cache-version guard ──────────────────────────────────────────────────────
 # Bump this string whenever extraction logic changes so stale cached results
 # from previous code versions are automatically discarded.
-_CACHE_VERSION = "v3.0-STABLE"
+_CACHE_VERSION = "v4.0-ULTRA-STABLE"
 
 if st.session_state.get("_cache_version") != _CACHE_VERSION:
     st.cache_data.clear()
