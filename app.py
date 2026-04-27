@@ -244,7 +244,7 @@ st.markdown("""
     html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
     .stMetric { background: #f8f9fa; padding: 15px; border-radius: 10px; border-left: 5px solid #2ecc71; }
 </style>
-""", unsafe_allow_stdio=True)
+""", unsafe_allow_html=True)
 
 # --- CACHED EXTRACTION ---
 @st.cache_data(show_spinner=False)
