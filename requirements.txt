@@ -1,11 +1,11 @@
-# Carbon Crunch — Streamlit Cloud compatible
-streamlit>=1.32,<2.0
-easyocr>=1.7,<2.0
-opencv-python-headless>=4.9,<5.0
-numpy>=1.26,<2.0
-pandas>=2.2,<3.0
-pydantic>=2.6,<3.0
-matplotlib>=3.8,<4.0
-Pillow>=10.2,<12.0
-torch>=2.2,<2.5
-torchvision>=0.17,<0.20
+# Carbon Crunch — Streamlit Cloud compatible (Python 3.14)
+# Unpinned: lets pip pick the latest prebuilt wheels.
+# torch / torchvision are pulled in transitively by easyocr.
+streamlit
+easyocr
+opencv-python-headless
+numpy
+pandas
+pydantic
+matplotlib
+Pillow
